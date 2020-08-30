@@ -3,6 +3,9 @@ package me.joshy23.jcp;
 import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 /**
  * Creado por: joshy23
  * El 29/8/2020
@@ -25,7 +28,16 @@ public class PluginConnection {
         PluginConnectionManager.getInstance().getConnections().put(parent, this);
     }
 
-    public HikariDataSource getHikariDS() {
-        return hikariDS;
+    public Connection getConnection() throws SQLException {
+        return hikariDS.getConnection();
     }
+
+    public Connection getConnection(String username, String password) throws SQLException {
+        return hikariDS.getConnection(username, password);
+    }
+
+    public void closePool(){
+        if(!hikariDS.isClosed()) hikariDS.close();
+    }
+
 }
