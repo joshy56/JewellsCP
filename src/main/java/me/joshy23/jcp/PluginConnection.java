@@ -11,7 +11,7 @@ import java.sql.SQLException;
  * El 29/8/2020
  **/
 public class PluginConnection {
-    private final HikariDataSource hikariDS;
+    private HikariDataSource hikariDS;
 
     public PluginConnection(JavaPlugin parent, String host, int port, String database, String username, String password){
         hikariDS = new HikariDataSource();
