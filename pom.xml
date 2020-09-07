@@ -6,7 +6,7 @@
 
     <groupId>me.joshy23</groupId>
     <artifactId>JewellsCP</artifactId>
-    <version>1.3.4-SNAPSHOT</version>
+    <version>1.4.4-SNAPSHOT</version>
 
     <repositories>
         <repository>

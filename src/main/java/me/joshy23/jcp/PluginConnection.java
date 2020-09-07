@@ -60,7 +60,7 @@ public class PluginConnection {
                 statement.setObject(i, elements[i]);
             }
             resultSet = statement.executeQuery();
-            Bukkit.getPluginManager().callEvent(new PluginQueryEvent(this));
+            Bukkit.getPluginManager().callEvent(new PluginQueryEvent(this, resultSet));
             return resultSet;
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
