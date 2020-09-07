@@ -1,27 +1,30 @@
 package me.joshy23.jcp;
 
-import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import me.joshy23.jcp.events.PluginQueryEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
 /**
- * Creado por: joshy23
- * El 29/8/2020
+ * @author joshy23
+ * @since 29/8/2020
  **/
 public class PluginConnection {
     private HikariDataSource hikariDS;
     private Properties properties;
+    private final Engine engine;
 
-    public PluginConnection(JavaPlugin parent, String host, int port, String database, String username, String password){
+    public PluginConnection(JavaPlugin parent, Engine engine, String host, int port, String database, String username, String password) {
+        this.engine = engine;
         properties = new Properties();
-        properties.setProperty("dataSourceClassName", "com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
+        properties.setProperty("dataSourceClassName", engine.getDataSource());
         properties.setProperty("dataSource.serverName", host);
         properties.setProperty("dataSource.portNumber", String.valueOf(port));
         properties.setProperty("dataSource.databaseName", database);
@@ -41,19 +44,27 @@ public class PluginConnection {
         return hikariDS.getConnection();
     }
 
-    public void reopenPool(){
-        if(hikariDS.isClosed()) hikariDS = new HikariDataSource();
+    public void reopenPool() {
+        if (hikariDS.isClosed()) hikariDS = new HikariDataSource();
         hikariDS.setDataSourceProperties(properties);
     }
 
-    public void closePool(){
-        if(!hikariDS.isClosed()) hikariDS.close();
+    protected void closePool() {
+        if (!hikariDS.isClosed()) hikariDS.close();
     }
 
-    public PreparedStatement query(String sql) throws SQLException {
-        try(Connection connection = hikariDS.getConnection()){
-            return connection.prepareStatement(sql);
-        }catch (SQLException sqlException){
+    public ResultSet query(String sql, Object[] elements) {
+        try (Connection connection = hikariDS.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            ResultSet resultSet;
+            int length = elements.length;
+            for (int i = 0; i < length; i++) {
+                statement.setObject(i, elements[i]);
+            }
+            resultSet = statement.executeQuery();
+            Bukkit.getPluginManager().callEvent(new PluginQueryEvent(this));
+            return resultSet;
+        } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }
         return null;

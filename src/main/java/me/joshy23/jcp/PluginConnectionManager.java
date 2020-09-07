@@ -5,8 +5,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashMap;
 
 /**
- * Creado por: joshy23
- * El 29/8/2020
+ * @author joshy23
+ * @since 29/8/2020
  **/
 public class PluginConnectionManager {
     private HashMap<JavaPlugin, PluginConnection> connections;
