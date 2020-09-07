@@ -18,11 +18,9 @@ import java.util.Properties;
  **/
 public class PluginConnection {
     private HikariDataSource hikariDS;
-    private Properties properties;
-    private final Engine engine;
+    private final Properties properties;
 
     public PluginConnection(JavaPlugin parent, Engine engine, String host, int port, String database, String username, String password) {
-        this.engine = engine;
         properties = new Properties();
         properties.setProperty("dataSourceClassName", engine.getDataSource());
         properties.setProperty("dataSource.serverName", host);
