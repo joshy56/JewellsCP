@@ -24,6 +24,10 @@ public class PluginQueryEvent extends Event {
         return handlers;
     }
 
+    public static HandlerList getHandlerList(){
+        return handlers;
+    }
+
     public PluginConnection getPluginConnection() {
         return pluginConnection;
     }

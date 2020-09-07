@@ -17,10 +17,12 @@ import java.util.Properties;
  * @since 29/8/2020
  **/
 public class PluginConnection {
+    private final JavaPlugin plugin;
     private HikariDataSource hikariDS;
     private final Properties properties;
 
     public PluginConnection(JavaPlugin parent, Engine engine, String host, int port, String database, String username, String password) {
+        plugin = parent;
         properties = new Properties();
         properties.setProperty("dataSourceClassName", engine.getDataSource());
         properties.setProperty("dataSource.serverName", host);
@@ -35,7 +37,11 @@ public class PluginConnection {
         properties.put("dataSource.logWriter", new PrintWriter(System.out));
         hikariDS = new HikariDataSource();
         hikariDS.setDataSourceProperties(properties);
-        PluginConnectionManager.getInstance().getConnections().put(parent, this);
+        PluginConnectionManager.getInstance().getConnections().put(plugin, this);
+    }
+
+    public JavaPlugin getPlugin() {
+        return plugin;
     }
 
     public Connection getConnection() throws SQLException {
